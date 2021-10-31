@@ -1,10 +1,11 @@
 import "./style.css";
 
 import "/components/no-results/index.js";
-import recipeCard from "/components/recipe-card/index.js";
+import searchBarInit from "/components/search-bar/index.js";
+import recipeCardInit from "/components/recipe-card/index.js";
 import recipes from "/recipes.js";
 
-await recipeCard;
+await Promise.all([searchBarInit, recipeCardInit]);
 
 const FORMATTED_RECIPES = recipes.map((recipe) => {
   return {
@@ -17,7 +18,7 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
   };
 });
 
-const $searchInput = document.querySelector(`.search`);
+const $searchInput = document.querySelector(`search-bar`);
 // const $filters = document.querySelector(`.filters`);
 const $recipesListing = document.querySelector(`.cards`);
 
@@ -25,7 +26,7 @@ $searchInput.addEventListener(`input`, filterAndRender);
 
 renderListing(FORMATTED_RECIPES);
 
-function filterAndRender() {
+function filterAndRender(e) {
   const value = cleanText($searchInput.value);
   if (!value) return renderListing(FORMATTED_RECIPES);
   if (value.length < 3) return renderListing(FORMATTED_RECIPES);
