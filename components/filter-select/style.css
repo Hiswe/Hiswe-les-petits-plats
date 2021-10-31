@@ -1,0 +1,21 @@
+:host {
+  background: var(--bg-color, black);
+  color: white;
+  border-radius: var(--border-radius);
+  min-height: 2rem;
+  display: block;
+}
+
+input {
+  background: none;
+  font: inherit;
+  color: inherit;
+  border: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input::placeholder {
+  color: inherit;
+}

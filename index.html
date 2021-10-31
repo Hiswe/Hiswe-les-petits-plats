@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -12,7 +12,10 @@
     </header>
     <div id="app">
       <search-bar></search-bar>
-      <div class="filters"></div>
+      <div class="filters">
+        <filter-select title="ingrédients" placeholder="Recherchez un ingrédient" style="--bg-color: #3282F7;"></filter-select>
+        <filter-select title="appareils" placeholder="Recherchez un appareil" style="--bg-color: #68D9A4;"></filter-select>
+      </div>
       <div class="cards"></div>
     </div>
     <script type="module" src="/main.js"></script>

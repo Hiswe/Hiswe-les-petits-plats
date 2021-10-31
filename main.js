@@ -2,10 +2,11 @@ import "./style.css";
 
 import "/components/no-results/index.js";
 import searchBarInit from "/components/search-bar/index.js";
+import filterSelectInit from "/components/filter-select/index.js";
 import recipeCardInit from "/components/recipe-card/index.js";
 import recipes from "/recipes.js";
 
-await Promise.all([searchBarInit, recipeCardInit]);
+await Promise.all([searchBarInit, filterSelectInit, recipeCardInit]);
 
 const FORMATTED_RECIPES = recipes.map((recipe) => {
   return {

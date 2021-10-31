@@ -14,9 +14,10 @@ label {
 input {
   display: block;
   padding: .75em 1em;
-  border: 1px solid gray;
-  background: lightgrey;
+  border: 1px solid lightgray;
+  background: #E7E7E7;
   text-align: start;
   font: inherit;
   flex: 1 1 auto;
+  border-radius: var(--border-radius);
 }

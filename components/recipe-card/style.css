@@ -2,6 +2,7 @@
   display: block;
   padding: 2rem;
   border: 1px solid lightgray;
+  border-radius: var(--border-radius);
   text-align: start;
 }
 dt, 
