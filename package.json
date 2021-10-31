@@ -1,0 +1,24 @@
+{
+  "name": "p11-front-end-search-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "recipes.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hiswe/P11-front-end-search-engine.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hiswe/P11-front-end-search-engine/issues"
+  },
+  "homepage": "https://github.com/Hiswe/P11-front-end-search-engine#readme"
+}
