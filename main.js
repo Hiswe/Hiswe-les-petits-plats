@@ -1,11 +1,8 @@
 import "./style.css";
 
 import recipeCard from "/recipe-card/index.js";
+import noResults from "/no-results/index.js";
 import recipes from "/recipes.js";
-
-// const ALL_INGREDIENTS = [...new Set(recipes.map((recipe) => {
-//   return recipe.ingredients.map((ingredient) => ingredient.ingredient);
-// }).flat())].sort(((a, b) => a.localeCompare(b)));
 
 await recipeCard;
 
@@ -21,33 +18,60 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
 });
 
 const $searchInput = document.querySelector(`.search`);
+const $filters = document.querySelector(`.filters`);
 const $recipesListing = document.querySelector(`.cards`);
 
 $searchInput.addEventListener(`input`, filterAndRender);
 
-render(FORMATTED_RECIPES);
+renderListing(FORMATTED_RECIPES);
 
 function filterAndRender() {
   const value = cleanText($searchInput.value);
-  if (!value) return render(FORMATTED_RECIPES);
+  if (!value) return renderListing(FORMATTED_RECIPES);
+  if (value.length < 3) return renderListing(FORMATTED_RECIPES);
   const filteredListing = FORMATTED_RECIPES.filter((recipe) => {
     return recipe.search.includes(value);
   });
-  return render(filteredListing);
+  return renderListing(filteredListing);
 }
 
-function render(recipes) {
-  $recipesListing.innerHTML = ``;
+function renderListing(recipes) {
+  if (!recipes.length) {
+    $recipesListing.innerHTML = `<no-results />`;
+    return;
+  }
   const cards = recipes.map((recipe) => {
     const card = document.createElement(`recipe-card`);
     card.data = recipe;
     return card;
   });
+  $recipesListing.innerHTML = ``;
   $recipesListing.append(...cards);
 }
+
+function renderSelects() {}
 
 function cleanText(text) {
   if (typeof text !== `string`) return ``;
   if (!text) return ``;
   return text.trim().toLowerCase();
+}
+
+function getSelectInformation(recipes) {
+  const ingredients = [
+    ...new Set(
+      recipes
+        .map((recipe) => {
+          return recipe.ingredients.map((ingredient) => ingredient.ingredient);
+        })
+        .flat()
+    ),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const utensils = [
+    ...new Set(recipes.map((recipe) => recipe.ustensils).flat()),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const machines = [...new Set(recipes.map((recipe) => recipe.appliance))];
+  return { ingredients, utensils, machines };
 }

@@ -4,6 +4,11 @@
   border: 1px solid lightgray;
   text-align: start;
 }
+dt, 
+dd {
+  margin: 0;
+  padding: 0;
+}
 header {
   display: flex;
   gap: 1rem;
@@ -13,21 +18,25 @@ header h3 {
 }
 header dl {
   flex: 0 0 auto;
+  display: grid;
+  gap: .5rem;
+  grid-template-columns: max-content minmax(0, 1fr);
 }
-
+header dt {
+  justify-self: end;
+}
 .recipe-card__content {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));;
   gap: 1rem;
 }
+.recipe-card__content p {
+  margin: 0;
+}
 .recipe-card__ingredients dl {
   display: flex;
   gap: .5rem;
-}
-.recipe-card__ingredients dt, 
-.recipe-card__ingredients dd {
   margin: 0;
-  padding: 0;
 }
 .recipe-card__ingredients dt {
   font-weight: bolder;

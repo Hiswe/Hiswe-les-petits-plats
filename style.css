@@ -1,3 +1,6 @@
+header {
+  text-align: center;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -10,4 +13,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-gap: 2rem;
+}
+no-results {
+  grid-column: span 3;
 }
