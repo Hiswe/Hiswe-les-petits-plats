@@ -2,7 +2,7 @@
 // single file component alternative
 // https://ckeditor.com/blog/implementing-single-file-web-components/
 
-const request = fetch(`/no-results/template.html`)
+const request = fetch(`/components/no-results/template.html`)
   .then((stream) => stream.text())
   .then((text) => define(text));
 

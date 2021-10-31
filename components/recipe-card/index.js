@@ -2,7 +2,7 @@
 // single file component alternative
 // https://ckeditor.com/blog/implementing-single-file-web-components/
 
-const request = fetch(`/recipe-card/template.html`)
+const request = fetch(`/components/recipe-card/template.html`)
   .then((stream) => stream.text())
   .then((text) => define(text));
 

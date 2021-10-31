@@ -1,7 +1,7 @@
 import "./style.css";
 
-import recipeCard from "/recipe-card/index.js";
-import noResults from "/no-results/index.js";
+import "/components/no-results/index.js";
+import recipeCard from "/components/recipe-card/index.js";
 import recipes from "/recipes.js";
 
 await recipeCard;
@@ -18,7 +18,7 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
 });
 
 const $searchInput = document.querySelector(`.search`);
-const $filters = document.querySelector(`.filters`);
+// const $filters = document.querySelector(`.filters`);
 const $recipesListing = document.querySelector(`.cards`);
 
 $searchInput.addEventListener(`input`, filterAndRender);
