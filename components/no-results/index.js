@@ -13,7 +13,6 @@ function define(html) {
 
     constructor() {
       super();
-      this._data = {};
       this.#render();
     }
 
@@ -21,14 +20,6 @@ function define(html) {
       const shadow = this.attachShadow({ mode: `open` });
       shadow.innerHTML = html;
     }
-
-    // get data() {
-    //   return this._data;
-    // }
-    // set data(newVal) {
-    //   this._data = newVal;
-    //   this.#render();
-    // }
   }
 
   customElements.define(`no-results`, NoResults);

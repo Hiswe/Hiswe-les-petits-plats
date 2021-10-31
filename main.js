@@ -4,6 +4,7 @@ import "/components/no-results/index.js";
 import searchBarInit from "/components/search-bar/index.js";
 import filterSelectInit from "/components/filter-select/index.js";
 import recipeCardInit from "/components/recipe-card/index.js";
+import { cleanText } from "/helpers.js";
 import recipes from "/recipes.js";
 
 await Promise.all([searchBarInit, filterSelectInit, recipeCardInit]);
@@ -19,22 +20,40 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
   };
 });
 
+// const INGREDIENTS = [
+//   ...new Set(
+//     FORMATTED_RECIPES
+//       .map((recipe) => {
+//         return recipe.ingredients.map((ingredient) => ingredient.ingredient);
+//       })
+//       .flat()
+//   ),
+// ].sort((a, b) => a.localeCompare(b));
+// const MACHINES  = [...new Set(FORMATTED_RECIPES.map((recipe) => recipe.appliance))]
+// const UTENSILS = [
+//   ...new Set(FORMATTED_RECIPES.map((recipe) => recipe.ustensils).flat()),
+// ].sort((a, b) => a.localeCompare(b));
+
 const $searchInput = document.querySelector(`search-bar`);
 // const $filters = document.querySelector(`.filters`);
 const $recipesListing = document.querySelector(`.cards`);
+const $ingredients = document.querySelector(`#ingredients`);
+const $machines = document.querySelector(`#machines`);
+const $utensils = document.querySelector(`#utensils`);
 
 $searchInput.addEventListener(`input`, filterAndRender);
 
 renderListing(FORMATTED_RECIPES);
 
-function filterAndRender(e) {
+function filterAndRender() {
   const value = cleanText($searchInput.value);
   if (!value) return renderListing(FORMATTED_RECIPES);
   if (value.length < 3) return renderListing(FORMATTED_RECIPES);
   const filteredListing = FORMATTED_RECIPES.filter((recipe) => {
     return recipe.search.includes(value);
   });
-  return renderListing(filteredListing);
+  getSelectInformation(filteredListing);
+  renderListing(filteredListing);
 }
 
 function renderListing(recipes) {
@@ -51,14 +70,6 @@ function renderListing(recipes) {
   $recipesListing.append(...cards);
 }
 
-function renderSelects() {}
-
-function cleanText(text) {
-  if (typeof text !== `string`) return ``;
-  if (!text) return ``;
-  return text.trim().toLowerCase();
-}
-
 function getSelectInformation(recipes) {
   const ingredients = [
     ...new Set(
@@ -70,10 +81,15 @@ function getSelectInformation(recipes) {
     ),
   ].sort((a, b) => a.localeCompare(b));
 
+  const machines = [...new Set(recipes.map((recipe) => recipe.appliance))];
+
   const utensils = [
     ...new Set(recipes.map((recipe) => recipe.ustensils).flat()),
   ].sort((a, b) => a.localeCompare(b));
 
-  const machines = [...new Set(recipes.map((recipe) => recipe.appliance))];
+  $ingredients.data = ingredients;
+  $machines.data = machines;
+  $utensils.data = utensils;
+
   return { ingredients, utensils, machines };
 }
