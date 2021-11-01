@@ -82,4 +82,5 @@ button {
   display: block;
   padding: var(--small-gutter) 0;
   text-align: start;
+  text-transform: capitalize;
 }

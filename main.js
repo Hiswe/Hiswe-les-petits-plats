@@ -75,8 +75,10 @@ $utensils.addEventListener(`selection`, (event) => {
 $keyword.addEventListener(`remove`, (event) => {
   KEYWORD_TYPE = ``;
   KEYWORD = ``;
+  $keyword.removeAttribute(`label`);
+  $keyword.style.removeProperty(`--bg-color`);
   filterAndRender();
-})
+});
 
 renderListing(FORMATTED_RECIPES);
 
@@ -94,38 +96,43 @@ function getFilteredRecipes() {
 }
 
 function filterAndRender() {
-  const newSearch = cleanText($searchInput.value);
-  if (!SEARCH_TERM && (!newSearch || newSearch.length < 3)) return;
-  SEARCH_TERM = newSearch;
-  const filteredRecipes = getFilteredRecipes();
-  renderListing(filteredRecipes);
-  const { hasFilters } = getSelectInformation(filteredRecipes);
-  $filters.classList[hasFilters ? `add` : `remove`](`filters--visible`);
+  // keywords
   const hasKeywords = KEYWORD && KEYWORD_TYPE;
-  $keywordWrapper.classList[hasKeywords ? `add` : `remove`](`keywords--visible`);
+  $keywordWrapper.classList[hasKeywords ? `add` : `remove`](
+    `keywords--visible`
+  );
   if (hasKeywords) {
     $keyword.setAttribute(`label`, KEYWORD);
     $keyword.style.setProperty(`--bg-color`, KEYWORD_COLORS[KEYWORD_TYPE]);
   }
+  // search
+  const newSearch = cleanText($searchInput.value);
+  const hasSearch = newSearch && newSearch.length >= 3;
+  if (!SEARCH_TERM && !hasSearch) return;
+  SEARCH_TERM = newSearch;
+  const filteredRecipes = getFilteredRecipes();
+  renderListing(filteredRecipes);
+  const { hasFilters } = getSelectInformation(filteredRecipes);
+  $filters.classList[hasFilters && hasSearch ? `add` : `remove`](
+    `filters--visible`
+  );
 }
 
 function getSelectInformation(filteredRecipes) {
   const ingredients = [
     ...new Set(
-      filteredRecipes
-        .map((recipe) => {
-          return recipe.ingredients.map((ingredient) => ingredient.ingredient);
-        })
-        .flat()
+      filteredRecipes.map((recipe) => recipe.searches[INGREDIENTS]).flat()
     ),
   ].sort((a, b) => a.localeCompare(b));
-
   const appliances = [
-    ...new Set(filteredRecipes.map((recipe) => recipe.appliance)),
+    ...new Set(
+      filteredRecipes.map((recipe) => recipe.searches[APPLIANCES]).flat()
+    ),
   ];
-
   const utensils = [
-    ...new Set(filteredRecipes.map((recipe) => recipe.ustensils).flat()),
+    ...new Set(
+      filteredRecipes.map((recipe) => recipe.searches[UTENSILS]).flat()
+    ),
   ].sort((a, b) => a.localeCompare(b));
 
   $ingredients.data = ingredients;

@@ -36,7 +36,6 @@ function define(html) {
     connectedCallback() {
       this.shadowRoot.addEventListener(`click`, (event) => {
         if (!event.target.matches(`img`)) return
-        if (!this.getAttribute(`label`)) return;
         this.dispatchEvent(
           new CustomEvent(`remove`, {
             bubbles: true,
@@ -49,7 +48,6 @@ function define(html) {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-      console.log(`attributeChangedCallback`, name)
       this.#render();
     }
   }
