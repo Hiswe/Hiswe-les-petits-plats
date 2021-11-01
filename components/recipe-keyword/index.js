@@ -38,6 +38,7 @@ function define(html) {
         if (!event.target.matches(`img`)) return
         this.dispatchEvent(
           new CustomEvent(`remove`, {
+            detail: this.getAttribute(`label`),
             bubbles: true,
             cancelable: true,
             composed: false,

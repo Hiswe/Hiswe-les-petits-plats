@@ -39,8 +39,7 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
 });
 
 let SEARCH_TERM = ``;
-let KEYWORD = ``;
-let KEYWORD_TYPE = ``;
+let KEYWORDS = [];
 
 const KEYWORD_COLORS = {
   [INGREDIENTS]: `#3282f7`,
@@ -56,29 +55,18 @@ const $appliances = document.querySelector(`#appliances`);
 const $utensils = document.querySelector(`#utensils`);
 
 const $keywordWrapper = document.querySelector(`.keywords`);
-const $keyword = document.querySelector(`recipe-keyword`);
 
 $searchInput.addEventListener(`input`, filterAndRender);
 $ingredients.addEventListener(`selection`, (event) => {
-  KEYWORD_TYPE = INGREDIENTS;
-  onKeywordSelection(event);
+  onKeywordSelection(event, INGREDIENTS);
 });
 $appliances.addEventListener(`selection`, (event) => {
-  KEYWORD_TYPE = APPLIANCES;
-  onKeywordSelection(event);
+  onKeywordSelection(event, APPLIANCES);
 });
 $utensils.addEventListener(`selection`, (event) => {
-  KEYWORD_TYPE = UTENSILS;
-  onKeywordSelection(event);
+  onKeywordSelection(event, UTENSILS);
 });
-
-$keyword.addEventListener(`remove`, (event) => {
-  KEYWORD_TYPE = ``;
-  KEYWORD = ``;
-  $keyword.removeAttribute(`label`);
-  $keyword.style.removeProperty(`--bg-color`);
-  filterAndRender();
-});
+$keywordWrapper.addEventListener(`remove`, onKeywordRemoval);
 
 renderListing(FORMATTED_RECIPES);
 
@@ -87,9 +75,12 @@ function getFilteredRecipes() {
   let filteredRecipes = FORMATTED_RECIPES.filter((recipe) => {
     return recipe.searches.all.includes(SEARCH_TERM);
   });
-  if (KEYWORD && KEYWORD_TYPE) {
+  if (KEYWORDS.length) {
     filteredRecipes = filteredRecipes.filter((recipe) => {
-      return recipe.searches[KEYWORD_TYPE].includes(KEYWORD);
+      const isKeyWordMatch = KEYWORDS.map(keyword => {
+        return recipe.searches[keyword.type].includes(keyword.label)
+      })
+      return isKeyWordMatch.every(result => result === true);
     });
   }
   return filteredRecipes;
@@ -97,14 +88,7 @@ function getFilteredRecipes() {
 
 function filterAndRender() {
   // keywords
-  const hasKeywords = KEYWORD && KEYWORD_TYPE;
-  $keywordWrapper.classList[hasKeywords ? `add` : `remove`](
-    `keywords--visible`
-  );
-  if (hasKeywords) {
-    $keyword.setAttribute(`label`, KEYWORD);
-    $keyword.style.setProperty(`--bg-color`, KEYWORD_COLORS[KEYWORD_TYPE]);
-  }
+  renderKeywords();
   // search
   const newSearch = cleanText($searchInput.value);
   const hasSearch = newSearch && newSearch.length >= 3;
@@ -161,7 +145,32 @@ function renderListing(recipes) {
   $recipesListing.append(...cards);
 }
 
-function onKeywordSelection(event) {
-  KEYWORD = cleanText(event.detail);
+function renderKeywords() {
+  if (!KEYWORDS.length) {
+    $keywordWrapper.innerHTML = ``;
+    $keywordWrapper.classList.remove(`keywords--visible`);
+    return;
+  }
+  $keywordWrapper.classList.add(`keywords--visible`);
+  const keywords = KEYWORDS.map((keyword) => {
+    const keywordElement = document.createElement(`recipe-keyword`);
+    keywordElement.setAttribute(`label`, keyword.label);
+    keywordElement.style.setProperty(
+      `--bg-color`,
+      KEYWORD_COLORS[keyword.type]
+    );
+    return keywordElement;
+  });
+  $keywordWrapper.innerHTML = ``;
+  $keywordWrapper.append(...keywords);
+}
+
+function onKeywordSelection(event, type) {
+  KEYWORDS.push({ label: cleanText(event.detail), type });
+  filterAndRender();
+}
+
+function onKeywordRemoval(event) {
+  KEYWORDS = KEYWORDS.filter((keyword) => keyword.label !== event.detail);
   filterAndRender();
 }
