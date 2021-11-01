@@ -6,6 +6,20 @@ const INGREDIENTS = `INGREDIENTS`;
 const APPLIANCES = `APPLIANCES`;
 const UTENSILS = `UTENSILS`;
 
+const clickOutside = (ctx) => {
+  const handleOutsideClick = (e) => {
+    e.stopPropagation();
+    if (!ctx.el.contains(e.target)) ctx.get()();
+  };
+  // Register click/touchstart event listeners on the whole page
+  document.addEventListener(`click`, handleOutsideClick);
+
+  // cleanup if the element is unmounted
+  return () => {
+    document.removeEventListener(`click`, handleOutsideClick);
+  };
+};
+
 const FORMATTED_RECIPES = recipes.map((recipe) => {
   return {
     ...recipe,
@@ -32,20 +46,52 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
   };
 });
 
+function Filter(props) {
+  return {
+    $template: `#filter-template`,
+    id: props.id,
+    label: props.label,
+    placeholder: props.placeholder,
+    itemSearch: ``,
+    showPanel: false,
+    // passing keywords directly as a prop seems to remove reactivity
+    // => use `id` as a key to get the filters from the global state
+    get filteredKeywords() {
+      if (!this.itemSearch) return this.filters[props.id];
+      return this.filters[props.id].filter((item) =>
+        item.includes(cleanText(this.itemSearch))
+      );
+    },
+    onKeyword(keyword) {
+      this.keywordsSelection.push({ label: cleanText(keyword), type: this.id });
+      this.showPanel = false;
+    },
+    onFocus() {
+      this.showPanel = true;
+    },
+    onOutside() {
+      this.showPanel = false;
+    },
+  };
+}
+
 createApp({
-  // exposed to all expressions
+  Filter,
+  // global state
   search: ``,
-  keywords: [],
+  keywordsSelection: [],
   // getters
+  get isValidSearch() {
+    return this.search.length >= 3;
+  },
   get recipes() {
-    if (this.search.length < 3) return FORMATTED_RECIPES;
-    
+    if (!this.isValidSearch) return FORMATTED_RECIPES;
     let filteredRecipes = FORMATTED_RECIPES.filter((recipe) => {
       return recipe.searches.all.includes(this.search);
     });
-    if (this.keywords.length) {
+    if (this.keywordsSelection.length) {
       filteredRecipes = filteredRecipes.filter((recipe) => {
-        const isKeyWordMatch = KEYWORDS.map((keyword) => {
+        const isKeyWordMatch = this.keywordsSelection.map((keyword) => {
           return recipe.searches.keywords.includes(keyword.label);
         });
         return isKeyWordMatch.every((result) => result === true);
@@ -53,8 +99,37 @@ createApp({
     }
     return filteredRecipes;
   },
-  // methods
-  increment() {
-    this.count++;
+  get displayFilters() {
+    return this.isValidSearch
   },
-}).mount(`#app`);
+  get filters() {
+    this.recipes;
+    const [ingredients, appliances, utensils] = [
+      INGREDIENTS,
+      APPLIANCES,
+      UTENSILS,
+    ].map((key) => {
+      return (
+        [...new Set(this.recipes.map((recipe) => recipe.searches[key]).flat())]
+          .sort((a, b) => a.localeCompare(b))
+          // don't repeat already pinned keywords into select
+          .filter(
+            (term) => !this.keywordsSelection.find((kw) => kw.label === term)
+          )
+      );
+    });
+    return {
+      ingredients,
+      utensils,
+      appliances,
+    };
+  },
+  // methods
+  onRemoveKeyword(keyword) {
+    this.keywordsSelection = this.keywordsSelection.filter(
+      (kw) => kw.label !== keyword
+    );
+  },
+})
+  .directive(`click-outside`, clickOutside)
+  .mount(`#app`);
