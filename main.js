@@ -4,10 +4,16 @@ import "/components/no-results/index.js";
 import searchBarInit from "/components/search-bar/index.js";
 import filterSelectInit from "/components/filter-select/index.js";
 import recipeCardInit from "/components/recipe-card/index.js";
+import recipeKeywordInit from "/components/recipe-keyword/index.js";
 import { cleanText } from "/helpers.js";
 import recipes from "/recipes.js";
 
-await Promise.all([searchBarInit, filterSelectInit, recipeCardInit]);
+await Promise.all([
+  searchBarInit,
+  filterSelectInit,
+  recipeCardInit,
+  recipeKeywordInit,
+]);
 
 const INGREDIENTS = `INGREDIENTS`;
 const APPLIANCES = `APPLIANCES`;
@@ -36,11 +42,21 @@ let SEARCH_TERM = ``;
 let KEYWORD = ``;
 let KEYWORD_TYPE = ``;
 
+const KEYWORD_COLORS = {
+  [INGREDIENTS]: `#3282f7`,
+  [APPLIANCES]: `#68d9a4`,
+  [UTENSILS]: `#ed6454`,
+};
+
 const $searchInput = document.querySelector(`search-bar`);
+const $filters = document.querySelector(`.filters`);
 const $recipesListing = document.querySelector(`.cards`);
 const $ingredients = document.querySelector(`#ingredients`);
 const $appliances = document.querySelector(`#appliances`);
 const $utensils = document.querySelector(`#utensils`);
+
+const $keywordWrapper = document.querySelector(`.keywords`);
+const $keyword = document.querySelector(`recipe-keyword`);
 
 $searchInput.addEventListener(`input`, filterAndRender);
 $ingredients.addEventListener(`selection`, (event) => {
@@ -56,6 +72,12 @@ $utensils.addEventListener(`selection`, (event) => {
   onKeywordSelection(event);
 });
 
+$keyword.addEventListener(`remove`, (event) => {
+  KEYWORD_TYPE = ``;
+  KEYWORD = ``;
+  filterAndRender();
+})
+
 renderListing(FORMATTED_RECIPES);
 
 function getFilteredRecipes() {
@@ -64,7 +86,6 @@ function getFilteredRecipes() {
     return recipe.searches.all.includes(SEARCH_TERM);
   });
   if (KEYWORD && KEYWORD_TYPE) {
-    console.log({ KEYWORD, KEYWORD_TYPE });
     filteredRecipes = filteredRecipes.filter((recipe) => {
       return recipe.searches[KEYWORD_TYPE].includes(KEYWORD);
     });
@@ -77,8 +98,15 @@ function filterAndRender() {
   if (!SEARCH_TERM && (!newSearch || newSearch.length < 3)) return;
   SEARCH_TERM = newSearch;
   const filteredRecipes = getFilteredRecipes();
-  getSelectInformation(filteredRecipes);
   renderListing(filteredRecipes);
+  const { hasFilters } = getSelectInformation(filteredRecipes);
+  $filters.classList[hasFilters ? `add` : `remove`](`filters--visible`);
+  const hasKeywords = KEYWORD && KEYWORD_TYPE;
+  $keywordWrapper.classList[hasKeywords ? `add` : `remove`](`keywords--visible`);
+  if (hasKeywords) {
+    $keyword.setAttribute(`label`, KEYWORD);
+    $keyword.style.setProperty(`--bg-color`, KEYWORD_COLORS[KEYWORD_TYPE]);
+  }
 }
 
 function getSelectInformation(filteredRecipes) {
@@ -104,7 +132,12 @@ function getSelectInformation(filteredRecipes) {
   $appliances.data = appliances;
   $utensils.data = utensils;
 
-  return { ingredients, utensils, appliances };
+  return {
+    ingredients,
+    utensils,
+    appliances,
+    hasFilters: ingredients.length || utensils.length || appliances.length,
+  };
 }
 
 function renderListing(recipes) {

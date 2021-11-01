@@ -20,11 +20,23 @@ header {
   /* grid-template-columns: repeat(3, minmax(0, 1fr)); */
   grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   grid-gap: var(--big-gutter);
+  padding-top: var(--big-gutter);
 }
 no-results {
   grid-column: span 3;
 }
 .filters {
+  display: none;
+}
+.filters--visible {
   display: flex;
   gap: var(--gutter);
+  padding-top: var(--big-gutter);
+}
+.keywords {
+  display: none;
+}
+.keywords--visible {
+  display: block;
+  padding-top: var(--big-gutter);
 }

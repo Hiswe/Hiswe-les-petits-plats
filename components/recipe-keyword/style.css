@@ -1,0 +1,8 @@
+:host {
+  color: white;
+  background: var(--bg-color, black);
+  padding: var(--gutter) var(--small-gutter);
+  border-radius: var(--border-radius);
+  display: inline-flex;
+  gap: var(--small-gutter);
+}
