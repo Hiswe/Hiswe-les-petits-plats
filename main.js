@@ -29,8 +29,15 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
           ` `
         )} ${recipe.ingredients.map((i) => i.ingredient).join(` `)}`
       ),
-      // we'll need split keywords to have an exact match
-      // • convert everything to array to keep a single method to call
+      // make a big array of keywords too
+      // this will help with keyword selection
+      keywords: [
+        recipe.ingredients.map((i) => cleanText(i.ingredient)),
+        [cleanText(recipe.appliance)],
+        recipe.ustensils.map((u) => cleanText(u)),
+      ].flat(),
+      // a dictionary of all keywords
+      // will be used for select
       [INGREDIENTS]: recipe.ingredients.map((i) => cleanText(i.ingredient)),
       [APPLIANCES]: [cleanText(recipe.appliance)],
       [UTENSILS]: recipe.ustensils.map((u) => cleanText(u)),
@@ -40,7 +47,6 @@ const FORMATTED_RECIPES = recipes.map((recipe) => {
 
 let SEARCH_TERM = ``;
 let KEYWORDS = [];
-
 const KEYWORD_COLORS = {
   [INGREDIENTS]: `#3282f7`,
   [APPLIANCES]: `#68d9a4`,
@@ -77,10 +83,10 @@ function getFilteredRecipes() {
   });
   if (KEYWORDS.length) {
     filteredRecipes = filteredRecipes.filter((recipe) => {
-      const isKeyWordMatch = KEYWORDS.map(keyword => {
-        return recipe.searches[keyword.type].includes(keyword.label)
-      })
-      return isKeyWordMatch.every(result => result === true);
+      const isKeyWordMatch = KEYWORDS.map((keyword) => {
+        return recipe.searches.keywords.includes(keyword.label);
+      });
+      return isKeyWordMatch.every((result) => result === true);
     });
   }
   return filteredRecipes;
@@ -96,28 +102,26 @@ function filterAndRender() {
   SEARCH_TERM = newSearch;
   const filteredRecipes = getFilteredRecipes();
   renderListing(filteredRecipes);
-  const { hasFilters } = getSelectInformation(filteredRecipes);
+  // selects
+  const { hasFilters } = updateSelectsData(filteredRecipes);
   $filters.classList[hasFilters && hasSearch ? `add` : `remove`](
     `filters--visible`
   );
 }
 
-function getSelectInformation(filteredRecipes) {
-  const ingredients = [
-    ...new Set(
-      filteredRecipes.map((recipe) => recipe.searches[INGREDIENTS]).flat()
-    ),
-  ].sort((a, b) => a.localeCompare(b));
-  const appliances = [
-    ...new Set(
-      filteredRecipes.map((recipe) => recipe.searches[APPLIANCES]).flat()
-    ),
-  ];
-  const utensils = [
-    ...new Set(
-      filteredRecipes.map((recipe) => recipe.searches[UTENSILS]).flat()
-    ),
-  ].sort((a, b) => a.localeCompare(b));
+function updateSelectsData(filteredRecipes) {
+  const [ingredients, appliances, utensils] = [
+    INGREDIENTS,
+    APPLIANCES,
+    UTENSILS,
+  ].map((key) => {
+    return [
+      ...new Set(filteredRecipes.map((recipe) => recipe.searches[key]).flat()),
+    ]
+      .sort((a, b) => a.localeCompare(b))
+      // don't repeat already pinned keywords into select
+      .filter((term) => !KEYWORDS.find((kw) => kw.label === term));
+  });
 
   $ingredients.data = ingredients;
   $appliances.data = appliances;

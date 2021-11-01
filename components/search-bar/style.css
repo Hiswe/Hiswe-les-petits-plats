@@ -15,9 +15,9 @@ input {
   display: block;
   padding: .75em 1em;
   border: 1px solid lightgray;
-  background: #E7E7E7;
   text-align: start;
   font: inherit;
   flex: 1 1 auto;
   border-radius: var(--border-radius);
+  background: #E7E7E7 url(/assets/icon-search.svg) no-repeat calc(100% - 1rem) 50%;
 }
