@@ -1,5 +1,3 @@
-import "./style.css";
-
 import "/components/no-results/index.js";
 import searchBarInit from "/components/search-bar/index.js";
 import filterSelectInit from "/components/filter-select/index.js";
