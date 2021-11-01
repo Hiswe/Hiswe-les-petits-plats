@@ -1,19 +1,12 @@
 import "./style.css";
 
 import "/components/no-results/index.js";
-import searchBarInit from "/components/search-bar/index.js";
-import filterSelectInit from "/components/filter-select/index.js";
-import recipeCardInit from "/components/recipe-card/index.js";
-import recipeKeywordInit from "/components/recipe-keyword/index.js";
+import "/components/search-bar/index.js";
+import "/components/filter-select/index.js";
+import "/components/recipe-card/index.js";
+import "/components/recipe-keyword/index.js";
 import { cleanText } from "/helpers.js";
 import recipes from "/recipes.js";
-
-await Promise.all([
-  searchBarInit,
-  filterSelectInit,
-  recipeCardInit,
-  recipeKeywordInit,
-]);
 
 const INGREDIENTS = `INGREDIENTS`;
 const APPLIANCES = `APPLIANCES`;
@@ -115,12 +108,12 @@ function updateSelectsData(filteredRecipes) {
     APPLIANCES,
     UTENSILS,
   ].map((key) => {
-    return [
-      ...new Set(filteredRecipes.map((recipe) => recipe.searches[key]).flat()),
-    ]
-      .sort((a, b) => a.localeCompare(b))
-      // don't repeat already pinned keywords into select
-      .filter((term) => !KEYWORDS.find((kw) => kw.label === term));
+    return (
+      [...new Set(filteredRecipes.map((recipe) => recipe.searches[key]).flat())]
+        .sort((a, b) => a.localeCompare(b))
+        // don't repeat already pinned keywords into select
+        .filter((term) => !KEYWORDS.find((kw) => kw.label === term))
+    );
   });
 
   $ingredients.data = ingredients;
