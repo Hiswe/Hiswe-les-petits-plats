@@ -4,7 +4,8 @@
   "description": "",
   "main": "recipes.js",
   "scripts": {
-    "dev": "http-server"
+    "dev": "http-server -c-1",
+    "serve": "http-server"
   },
   "devDependencies": {
     "http-server": "^14.0.0",

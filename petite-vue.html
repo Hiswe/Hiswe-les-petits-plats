@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Les petits plats</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/petite-vue.css" />
+    <script src="https://unpkg.com/petite-vue"></script>
+  </head>
+  <body>
+    <header>
+      <img src="/assets/logo-les-petits-plats.svg" width="268" height="93" />
+    </header>
+    <div id="app" v-scope>
+      <div class="search-bar">
+        <label for="search">search</label>
+        <input
+          v-model="search"
+          type="text"
+          id="search"
+          placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"
+        />
+      </div>
+      <div class="cards" v-scope>
+        <article class="recipe-card" v-for="recipe of recipes">
+          <header class="recipe-card__header">
+            <h3>{{recipe.name}}</h3>
+            <dl>
+              <dt>
+                <img
+                  src="/assets/icon-duration.svg"
+                  width="20"
+                  height="20"
+                  alt="duration"
+                  title="duration"
+                />
+              </dt>
+              <dd>{{recipe.time}} min</dd>
+            </dl>
+          </header>
+          <div class="recipe-card__content">
+            <div class="recipe-card__ingredients">
+              <dl v-for="i of recipe.ingredients">
+                <dt>{{i.ingredient}}</dt>
+                <dd>{{i.quantity ? i.quantity : ``}}{{
+                i.quantity && i.unit ? ` ${i.unit}` : ``
+                }}
+              </dd>
+            </dl>
+            </div>
+            <p>{{recipe.description}}</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- <search-bar></search-bar>
+      <div class="keywords">
+        <recipe-keyword></recipe-keyword>
+      </div>
+      <div class="filters">
+        <filter-select
+          id="ingredients"
+          label="ingrédients"
+          placeholder="Recherchez un ingrédient"
+          style="--bg-color: #3282f7"
+        ></filter-select>
+        <filter-select
+          id="appliances"
+          label="appareils"
+          placeholder="Recherchez un appareil"
+          style="--bg-color: #68d9a4"
+        ></filter-select>
+        <filter-select
+          id="utensils"
+          label="ustensils"
+          placeholder="Recherchez un ustensile"
+          style="--bg-color: #ed6454"
+        ></filter-select>
+      </div>
+      <div class="cards"></div> -->
+
+      <!-- <div v-scope="{ localCount: 0 }">
+        <p>Global {{ store.count }}</p>
+        <button @click="store.inc">increment</button>
+      
+        <p>Local {{ localCount }}</p>
+        <button @click="localCount++">increment</button>
+      </div> -->
+      <!-- <div v-scope="Counter({ initialCount: 1 })"></div>
+      <div v-scope="Counter({ initialCount: 2 })"></div> -->
+    </div>
+
+    <!-- <template id="counter-template">
+      My count is {{ count }}
+      <button @click="inc">++</button>
+    </template> -->
+
+    <!-- <script type="module" src="/main.js"></script> -->
+    <script type="module" src="/petite-vue.js"></script>
+  </body>
+</html>
