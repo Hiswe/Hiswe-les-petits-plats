@@ -1,6 +1,13 @@
 :host {
   color: red;
-  border: 1px solid currentColor;
-  padding: 2rem;
+  border: 2px solid currentColor;
+  padding: var(--big-gutter);
   border-radius: var(--border-radius);
+  font-weight: bolder;
+  text-align: center;
 }
+
+p {
+  margin: 0;
+}
+
