@@ -1,12 +1,24 @@
 :host {
-  background: var(--bg-color, black);
   color: white;
-  border-radius: var(--border-radius);
-  min-height: 2rem;
   display: block;
+  position: relative;
 }
-
+label {
+  background: var(--bg-color, black);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  gap: var(--small-gutter);
+  padding: 0 var(--gutter) 0 0;
+  font-weight: bolder;
+}
+img {
+  flex: 0 0 auto;
+}
+strong,
 input {
+  padding: var(--gutter);
+  flex: 1 1 auto;
   background: none;
   font: inherit;
   color: inherit;
@@ -15,7 +27,59 @@ input {
   -moz-appearance: none;
   appearance: none;
 }
-
+input:not(.input--focus) {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}
+.input--focus {
+  outline: 0;
+  width: 30rem;
+}
+.input--focus ~ strong {
+  display: none;
+}
+.input--focus ~ img {
+  transform: rotate(0.5turn);
+}
 input::placeholder {
   color: inherit;
+}
+.panel {
+  columns: 3;
+  padding: var(--gutter);
+  /* display: none; */
+  position: absolute;
+  top: calc(100% - var(--border-radius));
+  left: 0;
+  right: 0;
+  background: var(--bg-color, black);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+.panel:not(.panel--show) {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}
+/* .panel--show {
+  display: block;
+} */
+button {
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  display: block;
+  padding: var(--small-gutter) 0;
+  text-align: start;
 }

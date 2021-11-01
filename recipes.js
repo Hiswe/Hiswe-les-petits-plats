@@ -99,7 +99,7 @@ export default [
         quantity: 1,
       },
       {
-        ingredient: "Huile d'olive",
+        ingredient: "Huile d'olives",
         quantity: 1,
         unit: "cuillères à soupe",
       },
@@ -326,7 +326,7 @@ export default [
         ingredient: "Vinaigre Balsamic",
       },
       {
-        ingredient: "Huile d'olive",
+        ingredient: "Huile d'olives",
       },
       {
         ingredient: "Basilic",
@@ -470,7 +470,7 @@ export default [
         unit: "cuillère à soupe",
       },
       {
-        ingredient: "huile d'olive",
+        ingredient: "Huile d'olives",
         quantity: 2,
         unit: "cuillère à soupe",
       },
@@ -716,7 +716,7 @@ export default [
         unit: "grammes",
       },
       {
-        ingredient: "huile d'olive",
+        ingredient: "Huile d'olives",
         quantity: 1,
         unit: "cuillères à soupe",
       },
@@ -1044,7 +1044,7 @@ export default [
         quantity: 2,
       },
       {
-        ingredient: "Huile d'olive",
+        ingredient: "Huile d'olives",
       },
       {
         ingredient: "Paprika",
@@ -1211,7 +1211,7 @@ export default [
         unit: "cl",
       },
       {
-        ingredient: "Huile d'olive",
+        ingredient: "Huile d'olives",
       },
       {
         ingredient: "Orange",

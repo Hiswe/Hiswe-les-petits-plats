@@ -30,7 +30,7 @@ function define(html) {
       const shadow = this.attachShadow({ mode: `open` });
       let replacedHtml = html;
       [`name`, `time`, `servings`, `description`].forEach((key) => {
-        replacedHtml = replacedHtml.replace(`{{${key}}}`, this._data[key]);
+        replacedHtml = replacedHtml.replaceAll(`{{${key}}}`, this._data[key]);
       });
       const ingredientsHtml = this._data.ingredients.map(
         (i) =>
@@ -38,7 +38,7 @@ function define(html) {
             i.quantity && i.unit ? ` ${i.unit}` : ``
           }</dd></dl>`
       ).join(``);
-      replacedHtml = replacedHtml.replace(`{{ingredients}}`, ingredientsHtml);
+      replacedHtml = replacedHtml.replaceAll(`{{ingredients}}`, ingredientsHtml);
       shadow.innerHTML = replacedHtml;
     }
 

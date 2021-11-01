@@ -24,8 +24,8 @@ function define(html) {
     #render() {
       const shadow = this.attachShadow({ mode: `open` });
       let replacedHtml = html;
-      [`label`, `placeholder`].forEach((key) => {
-        replacedHtml = replacedHtml.replace(
+      [`label`, `placeholder`, `id`].forEach((key) => {
+        replacedHtml = replacedHtml.replaceAll(
           `{{${key}}}`,
           this.getAttribute(key) || ``
         );
@@ -34,6 +34,30 @@ function define(html) {
       this.#inputElement = this.shadowRoot.querySelector(`input`);
       this.#panelElement = this.shadowRoot.querySelector(`.panel`);
       this.#inputElement.addEventListener(`input`, () => this.#renderList());
+      this.#inputElement.addEventListener(`focus`, () => {
+        this.#showPanel();
+      });
+
+      this.#panelElement.addEventListener(`click`, (event) => {
+        if (!event.target.matches(`button`)) return;
+        event.stopPropagation();
+        this.#closePanel();
+        this.dispatchEvent(
+          new CustomEvent(`selection`, {
+            detail: event.target.dataset.keyword,
+            bubbles: true,
+            cancelable: true,
+            composed: false,
+          })
+        );
+      });
+
+      // Listen for all clicks on the document
+      document.addEventListener(`click`, (event) => {
+        if (!event.target.closest(`filter-select`)) {
+          return this.#closePanel();
+        }
+      });
     }
 
     #renderList() {
@@ -42,13 +66,22 @@ function define(html) {
         return;
       }
       const value = cleanText(this.#inputElement.value);
-      console.log({ value });
       const filteredData = value
         ? this.#data.filter((item) => cleanText(item).includes(value))
         : this.#data;
       this.#panelElement.innerHTML = filteredData
-        .map((item) => `<button data-item="${item}">${item}</button>`)
+        .map((item) => `<button data-keyword="${item}">${item}</button>`)
         .join(``);
+    }
+
+    #showPanel() {
+      this.#inputElement.classList.add(`input--focus`);
+      this.#panelElement.classList.add(`panel--show`);
+    }
+
+    #closePanel() {
+      this.#inputElement.classList.remove(`input--focus`);
+      this.#panelElement.classList.remove(`panel--show`);
     }
 
     get data() {
