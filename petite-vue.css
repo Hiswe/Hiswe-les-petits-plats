@@ -25,6 +25,9 @@ dd {
   margin: 0;
   padding: 0;
 }
+[v-cloak] {
+  display: none !important;
+}
 #app {
   padding-top: var(--big-gutter);
 }
