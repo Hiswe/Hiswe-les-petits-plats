@@ -5,6 +5,7 @@ import recipes from "/recipes.js";
 const INGREDIENTS = `INGREDIENTS`;
 const APPLIANCES = `APPLIANCES`;
 const UTENSILS = `UTENSILS`;
+const SEARCH_MIN_TEXT = 3;
 
 const clickOutside = (ctx) => {
   const handleOutsideClick = (e) => {
@@ -18,6 +19,17 @@ const clickOutside = (ctx) => {
   return () => {
     document.removeEventListener(`click`, handleOutsideClick);
   };
+};
+
+const textToArray = (text) => {
+  const textWithNoPunctuation = text
+    .replace(/[\.'\(\)]/gi, ` `)
+    .replace(/\s+/, ` `);
+  const wordArray = textWithNoPunctuation
+    .split(` `)
+    .map(cleanText)
+    .filter((word) => word.length >= SEARCH_MIN_TEXT);
+  return wordArray;
 };
 
 const FORMATTED_RECIPES = recipes.map((recipe) => {
@@ -81,13 +93,18 @@ createApp({
   search: ``,
   keywordsSelection: [],
   // getters
+  get cleanedSearchAsArray() {
+    return textToArray(this.search);
+  },
   get isValidSearch() {
-    return this.search.length >= 3;
+    return this.cleanedSearchAsArray.length > 0;
   },
   get recipes() {
     if (!this.isValidSearch) return FORMATTED_RECIPES;
     let filteredRecipes = FORMATTED_RECIPES.filter((recipe) => {
-      return recipe.searches.all.includes(this.search);
+      return this.cleanedSearchAsArray
+        .map((searchWord) => recipe.searches.all.includes(searchWord))
+        .every((result) => result === true);
     });
     if (this.keywordsSelection.length) {
       filteredRecipes = filteredRecipes.filter((recipe) => {
@@ -100,7 +117,7 @@ createApp({
     return filteredRecipes;
   },
   get displayFilters() {
-    return this.isValidSearch
+    return this.isValidSearch;
   },
   get filters() {
     this.recipes;
