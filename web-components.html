@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Les petits plats</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+      <img src="/assets/logo-les-petits-plats.svg" width="268" height="93" />
+    </header>
+    <div id="app">
+      <search-bar></search-bar>
+      <div class="keywords">
+        <recipe-keyword></recipe-keyword>
+      </div>
+      <div class="filters">
+        <filter-select
+          id="ingredients"
+          label="ingrédients"
+          placeholder="Recherchez un ingrédient"
+          style="--bg-color: #3282f7"
+        ></filter-select>
+        <filter-select
+          id="appliances"
+          label="appareils"
+          placeholder="Recherchez un appareil"
+          style="--bg-color: #68d9a4"
+        ></filter-select>
+        <filter-select
+          id="utensils"
+          label="ustensils"
+          placeholder="Recherchez un ustensile"
+          style="--bg-color: #ed6454"
+        ></filter-select>
+      </div>
+      <div class="cards"></div>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

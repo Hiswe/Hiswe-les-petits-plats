@@ -5,39 +5,111 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Les petits plats</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/petite-vue.css" />
+    <script src="https://unpkg.com/petite-vue"></script>
   </head>
   <body>
     <header>
       <img src="/assets/logo-les-petits-plats.svg" width="268" height="93" />
     </header>
-    <div id="app">
-      <search-bar></search-bar>
-      <div class="keywords">
-        <recipe-keyword></recipe-keyword>
+    <div id="app" v-scope>
+      <div class="search-bar">
+        <label for="search">search</label>
+        <input
+          v-model="search"
+          type="text"
+          id="search"
+          placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"
+        />
       </div>
-      <div class="filters">
-        <filter-select
-          id="ingredients"
-          label="ingrédients"
-          placeholder="Recherchez un ingrédient"
+
+      <div class="keywords" v-if="keywordsSelection.length">
+        <div v-for="keyword of keywordsSelection" class="keyword" :class="`keyword--${keyword.type}`">
+          <span>{{keyword.label}}</span>
+          <img src="/assets/icon-close.svg" width="20" height="20" @click="onRemoveKeyword(keyword.label) "/>
+        </div>
+      </div>
+      <div class="filters" v-if="displayFilters">
+        <div
           style="--bg-color: #3282f7"
-        ></filter-select>
-        <filter-select
-          id="appliances"
-          label="appareils"
-          placeholder="Recherchez un appareil"
+          v-scope="Filter({ 
+            id: `ingredients`, 
+            label: `Ingredients`, 
+            placeholder:`Recherchez un ingrédient`,
+          })"
+        ></div>
+        <div
           style="--bg-color: #68d9a4"
-        ></filter-select>
-        <filter-select
-          id="utensils"
-          label="ustensils"
-          placeholder="Recherchez un ustensile"
+          v-scope="Filter({ 
+            id: `appliances`,
+            label: `Appareils`, 
+            placeholder:`Recherchez un appareil`,
+          })"
+        ></div>
+        <div
           style="--bg-color: #ed6454"
-        ></filter-select>
+          v-scope="Filter({ 
+            id: `utensils`, 
+            label: `Ustensiles`,
+            placeholder:`Recherchez un ustensile`,
+        })"
+        ></div>
       </div>
-      <div class="cards"></div>
+
+      <div class="cards" v-scope v-cloak>
+        <article class="recipe-card" v-for="recipe of recipes">
+          <header class="recipe-card__header">
+            <h3>{{recipe.name}}</h3>
+            <dl>
+              <dt>
+                <img
+                  src="/assets/icon-duration.svg"
+                  width="20"
+                  height="20"
+                  alt="duration"
+                  title="duration"
+                />
+              </dt>
+              <dd>{{recipe.time}} min</dd>
+            </dl>
+          </header>
+          <div class="recipe-card__content">
+            <div class="recipe-card__ingredients">
+              <dl v-for="i of recipe.ingredients">
+                <dt>{{i.ingredient}}</dt>
+                <dd>
+                  {{i.quantity ? i.quantity : ``}}{{ i.quantity && i.unit ? `
+                  ${i.unit}` : `` }}
+                </dd>
+              </dl>
+            </div>
+            <p>{{recipe.description}}</p>
+          </div>
+        </article>
+      </div>
     </div>
-    <script type="module" src="/main.js"></script>
+
+    <template id="filter-template">
+      <div class="filter" v-click-outside="onOutside">
+        <label :for="`${id}-input`">
+          <input
+            type="text"
+            class="filter"
+            :class="{'input--focus': showPanel}"
+            :placeholder="placeholder"
+            :id="`${id}-input`"
+            v-model="itemSearch"
+            @focus="onFocus"
+          />
+          <strong>{{label}}</strong>
+          <img src="/assets/icon-arrow-down.svg" width="16" height="11" />
+        </label>
+        <div class="panel" :class="{'panel--show': showPanel}">
+          <button v-for="keyword of filteredKeywords" @click="onKeyword(keyword)">{{keyword}}</button>
+        </div>
+      </div>
+    </template>
+
+    <script type="module" src="/petite-vue.js"></script>
   </body>
 </html>
